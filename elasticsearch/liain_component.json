@@ -1,0 +1,408 @@
+{
+  "version": 1,
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+          "name": "ilm_liain"
+        }
+      }
+    },
+    "mappings": {
+      "_routing": {
+        "required": false
+      },
+      "numeric_detection": false,
+      "dynamic_date_formats": [
+        "strict_date_optional_time",
+        "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+      ],
+      "_source": {
+        "excludes": [],
+        "includes": [],
+        "enabled": true
+      },
+      "dynamic": true,
+      "dynamic_templates": [],
+      "date_detection": true,
+      "properties": {
+        "agent": {
+          "type": "object",
+          "properties": {
+            "hostname": {
+              "path": "agent.name",
+              "type": "alias"
+            },
+            "build": {
+              "type": "object",
+              "properties": {
+                "original": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                }
+              }
+            },
+            "name": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "id": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "ephemeral_id": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "type": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "version": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            }
+          }
+        },
+        "DateMiseEnServiceCommercialePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeProjectionGeographique": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodeVoieRivoliImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodeAdresseGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeEmplacementPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CommunePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "EmplacementActifDisponible": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "RefRegroupementPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NomVoiePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CoordonneeImmeubleY": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "SiretGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CoordonneeImmeubleX": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeVoiePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "ecs": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            }
+          }
+        },
+        "ComplementNumeroVoieGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "FibreDedieeLibre": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "QualiteAdressePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodeVoieRivoliPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "IdentifiantImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "host": {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                }
+              }
+            },
+            "os": {
+              "type": "object",
+              "properties": {
+                "build": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "kernel": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "codename": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "name": {
+                  "ignore_above": 1024,
+                  "type": "keyword",
+                  "fields": {
+                    "text": {
+                      "type": "match_only_text"
+                    }
+                  }
+                },
+                "family": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "type": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "version": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "platform": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "full": {
+                  "ignore_above": 1024,
+                  "type": "keyword",
+                  "fields": {
+                    "text": {
+                      "type": "match_only_text"
+                    }
+                  }
+                }
+              }
+            },
+            "log": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "ignore_above": 1024,
+                      "type": "keyword"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "CodeInseePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CommentairePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "ReferencePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NombreLogementsAdresseIPE": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "DatePremiereMADPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "AccordGestionnaireImmeubleNecessaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeZone": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NombreLogementsPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "ComplementNumeroVoiePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NombrePMTechniques": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "DateInstallationPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodePostalGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NumeroVoiePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodeAdressePM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "EtatImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodeAdresseImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "DateSignatureConvention": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "GestionnaireImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NumeroVoieGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeVoieGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NomVoieImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CommuneGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "ComplementNumeroVoieImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CoordonneePMY": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CoordonneePMX": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "DateDerniereModification": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeIngenierie": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CapaciteMaxPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NumeroVoieImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodePostalPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NomVoieGestionnaire": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "ReferenceConsultationNative": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "message": {
+          "type": "match_only_text"
+        },
+        "DateCablageAdresse": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "EtatPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "NombreColonnesMontantesPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "@timestamp": {
+          "type": "date"
+        },
+        "TypeVoieImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodeInseeImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "BatimentPM": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "BatimentImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CommuneImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "TypeImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "CodePostalImmeuble": {
+          "ignore_above": 256,
+          "type": "keyword"
+        }
+      }
+    }
+  },
+  "_meta": {
+    "description": "Ce template permet de mapper la typologie de donnée entrante des CSV mis à disposition par liain"
+  }
+}
+
