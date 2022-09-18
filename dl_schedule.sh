@@ -7,10 +7,9 @@ rm -rf /var/log/liain/*
 source /root/venv_liain/bin/activate
 
 echo 'running python'
-python3 /root/liain/liain.py
 
-echo 'running filebeat'
-if [ $? -eq 0 ]; then
+if python3 /root/liain/liain.py; then
+    echo 'running filebeat'
     filebeat -e -c liain.yml --path.data /var/lib/filebeat_liain/
 else
     echo 'FAIL'
