@@ -9,22 +9,6 @@
       }
     },
     "mappings": {
-      "_routing": {
-        "required": false
-      },
-      "numeric_detection": false,
-      "dynamic_date_formats": [
-        "strict_date_optional_time",
-        "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
-      ],
-      "_source": {
-        "excludes": [],
-        "includes": [],
-        "enabled": true
-      },
-      "dynamic": true,
-      "dynamic_templates": [],
-      "date_detection": true,
       "properties": {
         "agent": {
           "type": "object",
@@ -65,8 +49,9 @@
           }
         },
         "DateMiseEnServiceCommercialePM": {
-          "ignore_above": 256,
-          "type": "keyword"
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
         },
         "TypeProjectionGeographique": {
           "ignore_above": 256,
@@ -241,8 +226,9 @@
           "type": "keyword"
         },
         "DatePremiereMADPM": {
-          "ignore_above": 256,
-          "type": "keyword"
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
         },
         "AccordGestionnaireImmeubleNecessaire": {
           "ignore_above": 256,
@@ -265,8 +251,9 @@
           "type": "keyword"
         },
         "DateInstallationPM": {
-          "ignore_above": 256,
-          "type": "keyword"
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
         },
         "CodePostalGestionnaire": {
           "ignore_above": 256,
@@ -289,8 +276,9 @@
           "type": "keyword"
         },
         "DateSignatureConvention": {
-          "ignore_above": 256,
-          "type": "keyword"
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
         },
         "GestionnaireImmeuble": {
           "ignore_above": 256,
@@ -325,8 +313,9 @@
           "type": "keyword"
         },
         "DateDerniereModification": {
-          "ignore_above": 256,
-          "type": "keyword"
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
         },
         "TypeIngenierie": {
           "ignore_above": 256,
@@ -356,8 +345,9 @@
           "type": "match_only_text"
         },
         "DateCablageAdresse": {
-          "ignore_above": 256,
-          "type": "keyword"
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
         },
         "EtatPM": {
           "ignore_above": 256,
@@ -405,4 +395,3 @@
     "description": "Ce template permet de mapper la typologie de donnée entrante des CSV mis à disposition par liain"
   }
 }
-
