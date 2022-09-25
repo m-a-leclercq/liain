@@ -387,6 +387,14 @@
         "CodePostalImmeuble": {
           "ignore_above": 256,
           "type": "keyword"
+        },
+        "localisation_immeuble": {
+          "type": "geo_point",
+          "ignore_malformed": true
+        },
+        "localisation_pm": {
+          "type": "geo_point",
+          "ignore_malformed": true
         }
       }
     }

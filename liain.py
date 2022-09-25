@@ -1,8 +1,11 @@
 import re
 import zipfile
+import csv
 
 import requests
 from bs4 import BeautifulSoup
+from pyproj import Transformer, transform
+
 
 URL = "https://operateurs.liain.fr/ipe/"
 
@@ -25,6 +28,9 @@ def download_file(filename):
 def unzip_file(zip_filename):
     with zipfile.ZipFile("/var/log/liain/{}".format(zip_filename), "r") as zip_ref:
         zip_ref.extractall("/var/log/liain/")
+
+def transform_coordinates(filename):
+    csv_iter = (row for row in csv.reader(open(filename, newline=''), delimiter=';'))
 
 filename = search_ipe_file()
 download_file(filename)
