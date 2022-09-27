@@ -5,6 +5,7 @@ import csv
 import requests
 from bs4 import BeautifulSoup
 from pyproj import Transformer, transform
+from pathlib import Path
 
 
 URL = "https://operateurs.liain.fr/ipe/"
@@ -27,11 +28,31 @@ def download_file(filename):
 
 def unzip_file(zip_filename):
     with zipfile.ZipFile("/var/log/liain/{}".format(zip_filename), "r") as zip_ref:
-        zip_ref.extractall("/var/log/liain/")
+        zip_ref.extractall("/var/log/")
+
 
 def transform_coordinates(filename):
-    csv_iter = (row for row in csv.reader(open(filename, newline=''), delimiter=';'))
+    file = Path(filename).stem
+    transformer = Transformer.from_crs(2154, 4326)
+    csv_iter = (row for row in csv.DictReader(open("/var/log/{}.csv".format(file), newline=''), delimiter=';'))
+    processed_lines = 0
+    for line in csv_iter:
+        line.pop('')
+        try:
+            imm_lat, imm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
+            line["localisation_immeuble"] = "[{0},{1}]".format(imm_lat, imm_lon)
+        except TypeError:
+            pass
+        try:
+            pm_lat, pm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
+            line["localisation_pm"] = "[{0},{1}]".format(pm_lat, pm_lon)
+            import pdb; pdb.set_trace()
+        except TypeError:
+            pass
+        with open('path/to/csv_file', 'w') as f:
+
 
 filename = search_ipe_file()
 download_file(filename)
 unzip_file(filename)
+transform_coordinates(filename)
