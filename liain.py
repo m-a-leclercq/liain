@@ -36,20 +36,26 @@ def transform_coordinates(filename):
     transformer = Transformer.from_crs(2154, 4326)
     csv_iter = (row for row in csv.DictReader(open("/var/log/{}.csv".format(file), newline=''), delimiter=';'))
     processed_lines = 0
-    for line in csv_iter:
-        line.pop('')
-        try:
-            imm_lat, imm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
-            line["localisation_immeuble"] = "[{0},{1}]".format(imm_lat, imm_lon)
-        except TypeError:
-            pass
-        try:
-            pm_lat, pm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
-            line["localisation_pm"] = "[{0},{1}]".format(pm_lat, pm_lon)
-            import pdb; pdb.set_trace()
-        except TypeError:
-            pass
-        with open('path/to/csv_file', 'w') as f:
+    with open('test.csv', 'w', newline='') as csvfile:
+        csv_write = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_NONE)
+        for line in csv_iter:
+            line.pop('')
+            try:
+                imm_lat, imm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
+                line["localisation_immeuble"] = "[{0},{1}]".format(imm_lat, imm_lon)
+            except TypeError:
+                line["localisation_immeuble"] = ""
+                pass
+            try:
+                pm_lat, pm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
+                line["localisation_pm"] = "[{0},{1}]".format(pm_lat, pm_lon)
+            except TypeError:
+                line["localisation_pm"] = ""
+                pass
+            csv_write.writerow(list(line.values()))
+            processed_lines += 1
+        print("{} lines were processed".format(processed_lines))
+
 
 
 filename = search_ipe_file()
