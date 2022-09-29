@@ -63,14 +63,11 @@
           "QualiteAdressePM",
           "DatePremiereMADPM",
           "AccordGestionnaireImmeubleNecessaire",
-          "TypeZone"
+          "TypeZone",
+          "localisation_immeuble",
+          "localisation_pm"
         ],
         "separator": ";"
-      }
-    },
-    {
-      "drop": {
-        "if": "ctx.TypeEmplacementPM == 'TypeEmplacementPM'"
       }
     }
   ]
