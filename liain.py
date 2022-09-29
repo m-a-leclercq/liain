@@ -36,19 +36,19 @@ def transform_coordinates(filename):
     transformer = Transformer.from_crs(2154, 4326)
     csv_iter = (row for row in csv.DictReader(open("/var/log/{}.csv".format(file), newline=''), delimiter=';'))
     processed_lines = 0
-    with open('test.csv', 'w', newline='') as csvfile:
-        csv_write = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_NONE)
+    with open("/var/log/liain/{}.csv".format(file), 'w', newline='') as csvfile:
+        csv_write = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
         for line in csv_iter:
             line.pop('')
             try:
                 imm_lat, imm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
-                line["localisation_immeuble"] = "[{0},{1}]".format(imm_lat, imm_lon)
+                line["localisation_immeuble"] = "{0},{1}".format(imm_lat, imm_lon)
             except TypeError:
                 line["localisation_immeuble"] = ""
                 pass
             try:
-                pm_lat, pm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
-                line["localisation_pm"] = "[{0},{1}]".format(pm_lat, pm_lon)
+                pm_lat, pm_lon = transformer.transform(line.get("CoordonneePMX"), line.get("CoordonneePMY"))
+                line["localisation_pm"] = "{0},{1}".format(pm_lat, pm_lon)
             except TypeError:
                 line["localisation_pm"] = ""
                 pass
