@@ -1,0 +1,16 @@
+{
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_replicas": "0"
+      }
+    }
+  },
+  "index_patterns": [
+    "liain_transform*"
+  ],
+  "composed_of": [
+    "liain_component"
+  ],
+  "priority": 1
+}

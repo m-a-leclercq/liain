@@ -1,0 +1,23 @@
+{
+  "source": {
+    "index": [
+      "liain"
+    ]
+  },
+  "latest": {
+    "unique_key": [
+      "ReferencePM"
+    ],
+    "sort": "@timestamp"
+  },
+  "description": "Suit l'évolution du statut des PM",
+  "frequency": "10m",
+  "dest": {
+    "index": "liain_transform_pm_evol"
+  },
+  "sync": {
+    "time": {
+      "field": "@timestamp"
+    }
+  }
+}
