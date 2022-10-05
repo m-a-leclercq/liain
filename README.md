@@ -8,3 +8,7 @@ La mise en forme des données est assurée par l'ingest pipeline `ingest_liain.j
 
 ## Statistiques
 Les transform créent automatiquement des stats des déploiements #TODO
+
+
+## Remerciements
+(Simon blum)[simon@blum.dev] Pour l'écriture du code de conversion des projections GPS et son aide à la compréhension des informations de l'IPE.

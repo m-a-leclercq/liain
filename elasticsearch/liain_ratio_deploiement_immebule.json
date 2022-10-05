@@ -1,0 +1,79 @@
+{
+  "source": {
+    "index": [
+      "liain"
+    ]
+  },
+  "pivot": {
+    "group_by": {
+      "@timestamp": {
+        "date_histogram": {
+          "field": "@timestamp",
+          "calendar_interval": "1d"
+        }
+      },
+      "CommunePM": {
+        "terms": {
+          "field": "CommuneImmeuble"
+        }
+      }
+    },
+    "aggregations": {
+      "statut_immeuble": {
+        "terms": {
+          "field": "EtatImmeuble",
+          "size": 10
+        }
+      },
+      "ratio_deployes": {
+        "bucket_script": {
+          "buckets_path": {
+            "deploye": "statut_immeuble['DEPLOYE']._count",
+            "total": "_count"
+          },
+          "script": "(params.deploye == null ? 0 : params.deploye) / params.total",
+          "gap_policy": "insert_zeros"
+        }
+      },
+      "ratio_en_cours": {
+        "bucket_script": {
+          "buckets_path": {
+            "en_cours": "statut_immeuble['EN COURS DE DEPLOIEMENT']._count",
+            "total": "_count"
+          },
+          "script": "(params.en_cours == null ? 0 : params.en_cours) / params.total",
+          "gap_policy": "insert_zeros"
+        }
+      },
+      "ratio_cible": {
+        "bucket_script": {
+          "buckets_path": {
+            "cible": "statut_immeuble['CIBLE']._count",
+            "total": "_count"
+          },
+          "script": "(params.cible == null ? 0 : params.cible) / params.total",
+          "gap_policy": "insert_zeros"
+        }
+      },
+      "ratio_signe": {
+        "bucket_script": {
+          "buckets_path": {
+            "signe": "statut_immeuble['SIGNE']._count",
+            "total": "_count"
+          },
+          "script": "(params.signe == null ? 0 : params.signe) / params.total",
+          "gap_policy": "insert_zeros"
+        }
+      }
+    }
+  },
+  "frequency": "1h",
+  "sync": {
+    "time": {
+      "field": "@timestamp"
+    }
+  },
+  "dest": {
+    "index": "liain_transform_ratio_immeuble"
+  }
+}

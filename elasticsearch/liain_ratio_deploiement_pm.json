@@ -1,0 +1,57 @@
+{
+  "source": {
+    "index": [
+      "liain"
+    ]
+  },
+  "pivot": {
+    "group_by": {
+      "@timestamp": {
+        "date_histogram": {
+          "field": "@timestamp",
+          "calendar_interval": "1d"
+        }
+      },
+      "CommunePM": {
+        "terms": {
+          "field": "CommunePM"
+        }
+      }
+    },
+    "aggregations": {
+      "statut_pm": {
+        "terms": {
+          "field": "EtatPM",
+          "size": 5
+        },
+        "aggs": {
+          "nom_pm_nb_immeuble": {
+            "terms": {
+              "field": "ReferencePM",
+              "size": 100
+            }
+          }
+        }
+      },
+      "ratio_deployes": {
+        "bucket_script": {
+          "buckets_path": {
+            "deploye": "statut_pm['DEPLOYE']>nom_pm_nb_immeuble._bucket_count",
+            "en_cours": "statut_pm['EN COURS DE DEPLOIEMENT']>nom_pm_nb_immeuble._bucket_count"
+          },
+          "script": "(params.deploye == null ? 0 : params.deploye) / ((params.en_cours == null ? 0 : params.en_cours) + (params.deploye == null ? 0 : params.deploye))",
+          "gap_policy": "insert_zeros"
+        }
+      }
+    }
+  },
+  "frequency": "1h",
+  "sync": {
+    "time": {
+      "field": "@timestamp"
+    }
+  },
+  "dest": {
+    "index": "liain_transform_ratio_pm"
+  }
+}
