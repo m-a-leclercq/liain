@@ -1,0 +1,30 @@
+{
+  "source": {
+    "index": [
+      "liain"
+    ],
+    "query": {
+      "match_all": {}
+    }
+  },
+  "dest": {
+    "index": "liain_transform_statut_immeuble"
+  },
+  "frequency": "30m",
+  "sync": {
+    "time": {
+      "field": "@timestamp",
+      "delay": "60s"
+    }
+  },
+  "latest": {
+    "unique_key": [
+      "EtatImmeuble",
+      "IdentifiantImmeuble"
+    ],
+    "sort": "@timestamp"
+  },
+  "description": "Suit les changements de statut des immeubles",
+  "settings": {}
+  }
+}
