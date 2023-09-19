@@ -13,7 +13,7 @@ URL = "https://operateurs.liain.fr/ipe/"
 def search_ipe_file():
     # Scan all available files, grab IPE archive filename
     req = requests.get(URL)
-    filename = BeautifulSoup(req.text, 'html.parser').find(href=re.compile("LIAIN_01_SIEA.*")).string
+    filename = BeautifulSoup(req.text, 'html.parser').find(href=re.compile("LIAIN_01_SIEA.*PBOOK\\.zip")).string
 
     return filename
 
@@ -39,7 +39,6 @@ def transform_coordinates(filename):
     with open("/var/log/liain/{}.csv".format(file), 'w', newline='') as csvfile:
         csv_write = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
         for line in csv_iter:
-            line.pop('')
             try:
                 imm_lat, imm_lon = transformer.transform(line.get("CoordonneeImmeubleX"), line.get("CoordonneeImmeubleY"))
                 line["localisation_immeuble"] = "{0},{1}".format(imm_lat, imm_lon)
