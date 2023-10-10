@@ -64,6 +64,7 @@
           "DatePremiereMADPM",
           "AccordGestionnaireImmeubleNecessaire",
           "TypeZone",
+          "VoletPlanFranceTHD",
           "localisation_immeuble",
           "localisation_pm"
         ],
