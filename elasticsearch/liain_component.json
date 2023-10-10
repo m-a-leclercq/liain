@@ -238,6 +238,10 @@
           "ignore_above": 256,
           "type": "keyword"
         },
+        "VoletPlanFranceTHD": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
         "NombreLogementsPM": {
           "ignore_above": 256,
           "type": "keyword"
