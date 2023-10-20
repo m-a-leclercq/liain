@@ -1,7 +1,6 @@
 #!/bin/bash
-# Cleanup on aisle two!
-rm -rf /var/log/liain/*
-rm -rf /var/log/PBOOK*.csv
+# Cleanup previously donwloaded file, processed csv and original csv
+rm -v /var/log/liain/*.zip /var/log/liain/*.csv /var/log/liain/extract/LIAIN_01_SIEA*.csv
 
 # Time to get this show on the road
 source /root/venv_liain/bin/activate

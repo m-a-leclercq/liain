@@ -22,20 +22,26 @@ def download_file(filename):
     dl_url = "{0}{1}".format(URL, filename)
     download = requests.get(dl_url, stream=True)
 
+    print("Download starting")
     with open("/var/log/liain/{}".format(filename), 'wb') as fd:
         for chunk in download.iter_content(chunk_size=128):
             fd.write(chunk)
+    print("Download finished")
+
 
 def unzip_file(zip_filename):
+    print("Unzipping...")
     with zipfile.ZipFile("/var/log/liain/{}".format(zip_filename), "r") as zip_ref:
-        zip_ref.extractall("/var/log/")
+        zip_ref.extractall("/var/log/liain/extract/")
+    print("Done unzipping")
 
 
 def transform_coordinates(filename):
+    print("Processing...")
     file = Path(filename).stem
     transformer = Transformer.from_crs(2154, 4326)
-    csv_iter = (row for row in csv.DictReader(open("/var/log/{}.csv".format(file), newline=''), delimiter=';'))
-    processed_lines = 0
+    csv_iter = (row for row in csv.DictReader(open("/var/log/liain/extract/{}.csv".format(file), newline=''), delimiter=';'))
+    processed_lines, total_lines = 0, 0
     with open("/var/log/liain/{}.csv".format(file), 'w', newline='') as csvfile:
         csv_write = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
         for line in csv_iter:
@@ -51,13 +57,17 @@ def transform_coordinates(filename):
             except TypeError:
                 line["localisation_pm"] = ""
                 pass
-            csv_write.writerow(list(line.values()))
-            processed_lines += 1
-        print("{} lines were processed".format(processed_lines))
+            if len(line.keys()) == 63 :
+              csv_write.writerow(list(line.values()))
+              processed_lines += 1
+            else:
+                print("this object doesn't have 63 fields as expected")
+            total_lines += 1
 
+        print("{} lines were processed, out of {} lines".format(processed_lines, total_lines))
 
-
-filename = search_ipe_file()
-download_file(filename)
-unzip_file(filename)
-transform_coordinates(filename)
+if __name__ == "__main__":
+  filename = search_ipe_file()
+  download_file(filename)
+  unzip_file(filename)
+  transform_coordinates(filename)
