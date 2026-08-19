@@ -1,3 +1,5 @@
 requests
 beautifulsoup4
 pyproj
+elasticsearch[async]
+python-dotenv

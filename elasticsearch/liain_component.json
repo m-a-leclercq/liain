@@ -392,6 +392,15 @@
           "ignore_above": 256,
           "type": "keyword"
         },
+        "Code_RNB": {
+          "ignore_above": 256,
+          "type": "keyword"
+        },
+        "Date_RNB": {
+          "type": "date",
+          "format": "yyyyMMdd",
+          "ignore_malformed": true
+        },
         "localisation_immeuble": {
           "type": "geo_point",
           "ignore_malformed": true
