@@ -57,11 +57,11 @@ def transform_coordinates(filename):
             except TypeError:
                 line["localisation_pm"] = ""
                 pass
-            if len(line.keys()) == 63 :
+            if len(line.keys()) == 65 :
               csv_write.writerow(list(line.values()))
               processed_lines += 1
             else:
-                print("this object doesn't have 63 fields as expected")
+                print("this object doesn't have 65 fields as expected")
             total_lines += 1
 
         print("{} lines were processed, out of {} lines".format(processed_lines, total_lines))
