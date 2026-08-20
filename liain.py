@@ -22,7 +22,7 @@ ES_USER    = os.environ.get("ES_USERNAME")
 ES_PASS    = os.environ.get("ES_PASSWORD")
 ES_INDEX   = os.environ.get("ES_INDEX", "liain")
 
-EXPECTED_FIELDS = 65   # current CSV schema column count
+EXPECTED_FIELDS = 63   # current CSV schema column count
 BULK_CHUNK      = 500
 CSV_ENCODING    = "utf-8-sig"  # handles UTF-8 BOM; fall back to latin-1 below if needed
 
@@ -119,7 +119,7 @@ def generate_docs(zip_buf: io.BytesIO, transformer: Transformer, run_ts: str):
 
                 row["@timestamp"] = run_ts
 
-                yield {"_index": ES_INDEX, "_source": row}
+                yield {"_index": ES_INDEX, "_op_type": "create", "_source": row}
 
                 if i % 50_000 == 0:
                     print(f"  … {i:,} rows processed")
