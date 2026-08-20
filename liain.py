@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from pyproj import Transformer
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk, BulkIndexError
+from elasticsearch.helpers import streaming_bulk
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,8 +22,7 @@ ES_USER    = os.environ.get("ES_USERNAME")
 ES_PASS    = os.environ.get("ES_PASSWORD")
 ES_INDEX   = os.environ.get("ES_INDEX", "liain")
 
-EXPECTED_FIELDS = 65  # CSV columns before we add the two localisation_ fields
-                       # 63 original + Code_RNB + Date_RNB (added 2025)
+EXPECTED_FIELDS = 65   # current CSV schema column count
 BULK_CHUNK      = 500
 CSV_ENCODING    = "utf-8-sig"  # handles UTF-8 BOM; fall back to latin-1 below if needed
 
@@ -79,45 +78,35 @@ def _pick_csv(zf: zipfile.ZipFile) -> str:
 
 
 def generate_docs(zip_buf: io.BytesIO, transformer: Transformer, run_ts: str):
-    """
-    Yield Elasticsearch bulk-action dicts, one per CSV row.
-
-    The zip buffer is read sequentially; no full extraction to disk occurs.
-    """
-    skipped = 0
+    """Yield Elasticsearch bulk-action dicts, one per CSV row."""
     with zipfile.ZipFile(zip_buf) as zf:
         csv_name = _pick_csv(zf)
         print(f"Processing {csv_name} …")
 
         with zf.open(csv_name) as raw:
-            # Try UTF-8 with BOM first; most modern exports from French agencies use it.
             try:
                 text_stream = io.TextIOWrapper(raw, encoding=CSV_ENCODING, errors="strict")
                 reader = csv.DictReader(text_stream, delimiter=";")
-                # Peek at header to trigger decode; if it blows up we fall through.
-                _ = reader.fieldnames
+                _ = reader.fieldnames  # trigger decode; raises UnicodeDecodeError if encoding wrong
             except UnicodeDecodeError:
                 raw.seek(0)
                 text_stream = io.TextIOWrapper(raw, encoding="latin-1", errors="replace")
                 reader = csv.DictReader(text_stream, delimiter=";")
 
-            for i, row in enumerate(reader, start=1):
-                if len(row) != EXPECTED_FIELDS:
-                    skipped += 1
-                    if skipped <= 5:
-                        print(
-                            f"  Row {i}: expected {EXPECTED_FIELDS} fields, got {len(row)} – skipping",
-                            file=sys.stderr,
-                        )
-                    continue
+            actual = len(reader.fieldnames or [])
+            if actual != EXPECTED_FIELDS:
+                raise RuntimeError(
+                    f"CSV header has {actual} columns, expected {EXPECTED_FIELDS}. "
+                    "Update EXPECTED_FIELDS if the schema has changed."
+                )
 
-                # ── coordinate transform ──────────────────────────────────────
+            for i, row in enumerate(reader, start=1):
                 try:
                     lat, lon = transformer.transform(
                         row["CoordonneeImmeubleX"], row["CoordonneeImmeubleY"]
                     )
                     row["localisation_immeuble"] = f"{lat},{lon}"
-                except (TypeError, Exception):
+                except Exception:
                     row["localisation_immeuble"] = None
 
                 try:
@@ -125,7 +114,7 @@ def generate_docs(zip_buf: io.BytesIO, transformer: Transformer, run_ts: str):
                         row["CoordonneePMX"], row["CoordonneePMY"]
                     )
                     row["localisation_pm"] = f"{lat},{lon}"
-                except (TypeError, Exception):
+                except Exception:
                     row["localisation_pm"] = None
 
                 row["@timestamp"] = run_ts
@@ -135,34 +124,41 @@ def generate_docs(zip_buf: io.BytesIO, transformer: Transformer, run_ts: str):
                 if i % 50_000 == 0:
                     print(f"  … {i:,} rows processed")
 
-    if skipped:
-        print(f"Skipped {skipped} malformed rows total.")
-
 
 def index_docs(es: Elasticsearch, docs):
     success, errors = 0, 0
     try:
-        for ok, info in bulk(
-            es,
+        for ok, info in streaming_bulk(
+            es.options(request_timeout=60),
             docs,
             chunk_size=BULK_CHUNK,
             raise_on_error=False,
-            request_timeout=60,
         ):
             if ok:
                 success += 1
             else:
                 errors += 1
-                if errors <= 5:
+                if errors <= 20:
                     print(f"  Index error: {info}", file=sys.stderr)
-    except BulkIndexError as exc:
-        print(f"Bulk index error: {exc}", file=sys.stderr)
+    except Exception as exc:
+        print(
+            f"Indexing aborted after {success:,} docs: {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
+        raise
 
-    print(f"Done – indexed {success:,} documents, {errors} errors.")
+    if errors:
+        print(f"WARNING: {errors:,} documents rejected by ES (first 20 shown above).", file=sys.stderr)
+    print(f"Done – indexed {success:,} documents, {errors:,} errors.")
 
 
 if __name__ == "__main__":
     es = build_es_client()
+
+    info = es.info()
+    print(f"Connected to ES cluster '{info['cluster_name']}' v{info['version']['number']}")
+    print(f"Target index: {ES_INDEX}")
+
     transformer = Transformer.from_crs(2154, 4326)
     run_ts = datetime.now(tz=timezone.utc).isoformat()
 
